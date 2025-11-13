@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+<div class="app">
+    <header class="app__header">
+        <div class="app__brand">
+            <span class="app__logo">☀️</span>
+            <h1>Weather Dashboard</h1>
+        </div>
+        <p class="app__tagline">Real-time conditions, Done by Jagadeeshwari.</p>
+        {% if warning %}
+            <div class="alert alert--warning">
+                <strong>Configuration:</strong> {{ warning }}
+            </div>
+        {% endif %}
+    </header>
+
+    <main class="app__main">
+        <section class="card card--search">
+            <h2>Find a city</h2>
+            <form id="search-form">
+                <div class="input-group">
+                    <label for="location">City or City,Country</label>
+                    <input id="location" name="location" type="text" placeholder="e.g. Hyderabad,IN" required />
+                </div>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="units">Units</label>
+                        <select id="units" name="units">
+                            <option value="metric" {% if default_units == 'metric' %}selected{% endif %}>Metric (°C)</option>
+                            <option value="imperial" {% if default_units == 'imperial' %}selected{% endif %}>Imperial (°F)</option>
+                            <option value="standard" {% if default_units == 'standard' %}selected{% endif %}>Standard (K)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="language">Language</label>
+                        <input id="language" name="language" type="text" maxlength="5" placeholder="en" value="{{ default_language }}" />
+                    </div>
+                </div>
+                <button type="submit" class="btn btn--primary">
+                    <span class="btn__label">Fetch Weather</span>
+                    <span class="btn__loader">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </span>
+                </button>
+            </form>
+            <div id="form-message" role="alert" aria-live="polite"></div>
+        </section>
+
+        <section class="card card--result" id="result-card" hidden>
+            <div class="result__header">
+                <div class="result__title">
+                    <h2 id="result-location"></h2>
+                    <p id="result-timestamp"></p>
+                </div>
+                <div class="result__icon">
+                    <img id="result-icon" alt="Weather icon" />
+                </div>
+            </div>
+            <div class="result__body">
+                <div class="metric">
+                    <span class="metric__label">Conditions</span>
+                    <span class="metric__value" id="result-conditions"></span>
+                </div>
+                <div class="metric metric--highlight">
+                    <span class="metric__label">Temperature</span>
+                    <span class="metric__value" id="result-temperature"></span>
+                    <span class="metric__detail" id="result-feels-like"></span>
+                </div>
+                <div class="metric-grid">
+                    <div class="metric">
+                        <span class="metric__label">Humidity</span>
+                        <span class="metric__value" id="result-humidity"></span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric__label">Pressure</span>
+                        <span class="metric__value" id="result-pressure"></span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric__label">Wind</span>
+                        <span class="metric__value" id="result-wind"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card card--history">
+            <div class="history__header">
+                <h2>Recent searches</h2>
+                <button type="button" class="btn btn--ghost" id="clear-history">Clear</button>
+            </div>
+            <ul id="history-list" class="history__list">
+                <li class="history__placeholder">Your latest locations appear here.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="app__footer">
+        <p>Powered by OpenWeatherMap • Built with ❤️ for instant weather insights.</p>
+    </footer>
+</div>
+
+<script>
+    window.appConfig = {
+        defaultUnits: "{{ default_units }}",
+        defaultLanguage: "{{ default_language }}",
+    };
+</script>
+<script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</body>
+</html>
+
